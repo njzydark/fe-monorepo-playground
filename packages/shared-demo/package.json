@@ -1,0 +1,23 @@
+{
+  "name": "shared-demo",
+  "type": "module",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "build": "rslib build"
+  },
+  "dependencies": {
+    "classnames": "catalog:",
+    "dayjs": "catalog:",
+    "lodash": "catalog:"
+  },
+  "devDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}

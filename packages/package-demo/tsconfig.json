@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.module.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "references": [
+    {
+      "path": "../shared-demo"
+    }
+  ]
+}
