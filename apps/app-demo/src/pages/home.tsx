@@ -9,6 +9,7 @@ export const HomePage = () => {
       <DemoTitle>Home Page</DemoTitle>
       <DemoBtn className="my-1 bg-pink-400">Demo Btn</DemoBtn>
       <Link to="/demo">Demo Page</Link>
+      <Link to="/sform">SForm Page</Link>
     </div>
   )
 }

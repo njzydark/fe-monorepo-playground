@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from 'react-router'
 
 import { DemoPage } from './pages/demo'
 import { HomePage } from './pages/home'
+import { SFormPage } from './pages/sform'
 
 export const App = () => {
   useEffect(() => {
@@ -16,8 +17,7 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/demo" element={<DemoPage />} />
+        <Route path="/" element={<SFormPage />} />
       </Routes>
     </BrowserRouter>
   )

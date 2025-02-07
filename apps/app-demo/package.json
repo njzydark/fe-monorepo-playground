@@ -12,6 +12,7 @@
     "dayjs": "catalog:",
     "lodash": "catalog:",
     "package-demo": "workspace:*",
+    "sform": "workspace:*",
     "shared-demo": "workspace:*"
   },
   "devDependencies": {

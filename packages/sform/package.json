@@ -1,0 +1,29 @@
+{
+  "name": "sform",
+  "type": "module",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "build": "rslib build"
+  },
+  "dependencies": {
+    "@arco-design/web-react": "^2.65.0",
+    "@formily/core": "2.3.2",
+    "@formily/react": "2.3.2",
+    "classnames": "catalog:",
+    "dayjs": "catalog:",
+    "lodash": "catalog:",
+    "tailwindcss": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  }
+}
