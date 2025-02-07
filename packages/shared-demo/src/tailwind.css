@@ -1,0 +1,27 @@
+/* stylelint-disable comment-empty-line-before */
+/* stylelint-disable import-notation */
+/* stylelint-disable at-rule-empty-line-before */
+@layer theme, base, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+/* @import 'tailwindcss/preflight.css' layer(base); */
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* @layer base {
+  h1 {
+    font-size: var(--text-2xl);
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+  }
+
+  a {
+    color: var(--color-blue-600);
+    text-decoration-line: underline;
+  }
+} */

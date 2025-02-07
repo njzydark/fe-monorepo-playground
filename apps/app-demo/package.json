@@ -1,0 +1,29 @@
+{
+  "name": "app-demo",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "rsbuild dev",
+    "build": "rsbuild build",
+    "preview": "rsbuild preview",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "classnames": "catalog:",
+    "dayjs": "catalog:",
+    "lodash": "catalog:",
+    "package-demo": "workspace:*",
+    "shared-demo": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router": "catalog:"
+  }
+}
