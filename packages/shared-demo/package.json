@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "build": "rslib build"
+    "build": "rslib build",
+    "test": "rstest run"
   },
   "dependencies": {
     "classnames": "catalog:",

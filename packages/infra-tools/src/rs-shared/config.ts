@@ -1,48 +1,60 @@
-import { RsbuildConfig } from '@rsbuild/core'
+import type { RsbuildConfig, RsbuildEntry, ToolsConfig } from '@rsbuild/core'
 import { pluginLess } from '@rsbuild/plugin-less'
 import { pluginReact } from '@rsbuild/plugin-react'
 import { pluginSourceBuild } from '@rsbuild/plugin-source-build'
 import { pluginSvgr } from '@rsbuild/plugin-svgr'
-import { defineConfig, RslibConfig } from '@rslib/core'
+import type { RslibConfig } from '@rslib/core'
+import { globSync } from 'glob'
+import pluginDevtoolsJson from 'rsbuild-plugin-devtool-json'
 
-export type SelfToolsOptions = {
-  /**
-   * @default source
-   */
-  sourceField?: string
-  /**
-   * @default true
-   */
-  bundless?: boolean
+import { define } from './define'
+import { PORT } from './env'
+import { commonProxy } from './proxy'
+
+export type RsSharedOptions = {
+  entry?: RsbuildEntry
   /**
    * @default true
    */
   sourceBuild?: boolean
   /**
+   * @default 'source'
+   */
+  sourceField?: string
+  /**
    * @default !!process.env.TEST
    */
   isTestEnv?: boolean
   /**
-   * @default false
+   * @default true
    */
-  dts?: boolean
+  enablePersistentCache?: boolean
 }
 
-export const getSharedConfig = (options?: SelfToolsOptions): RsbuildConfig | RslibConfig => {
+export const getRsSharedConfig = (options?: RsSharedOptions): RsbuildConfig | RslibConfig => {
   const nodePath = process.env?.NODE_PATH
   const isRsbuild = nodePath?.includes('rsbuild')
 
   const {
-    bundless: _bundless = true,
+    entry,
     sourceBuild = true,
-    isTestEnv = !!process.env.TEST,
     sourceField = 'source',
+    isTestEnv = !!process.env.TEST,
+    enablePersistentCache = true,
   } = options || {}
 
-  const bundless = isTestEnv ? false : _bundless
+  const defaultEntryPattern = isRsbuild
+    ? 'src/{dev,index}.{ts,js,tsx,jsx,mjs,cjs}'
+    : 'src/index.{ts,js,tsx,jsx,mjs,cjs}'
+
+  const entryMatchedFiles = entry ? [] : globSync(defaultEntryPattern, { cwd: process.cwd() })
 
   return {
     source: {
+      define,
+      entry: entry ?? {
+        index: entryMatchedFiles?.[0],
+      },
       transformImport: [
         {
           libraryName: '@arco-design/web-react',
@@ -52,6 +64,17 @@ export const getSharedConfig = (options?: SelfToolsOptions): RsbuildConfig | Rsl
         },
         {
           libraryName: '@arco-design/web-react/icon',
+          libraryDirectory: 'react-icon',
+          camelToDashComponentName: false,
+        },
+        {
+          libraryName: '@dp/react-component',
+          libraryDirectory: 'es',
+          camelToDashComponentName: false,
+          style: true,
+        },
+        {
+          libraryName: '@dp/react-component-icon',
           libraryDirectory: 'react-icon',
           camelToDashComponentName: false,
         },
@@ -65,20 +88,14 @@ export const getSharedConfig = (options?: SelfToolsOptions): RsbuildConfig | Rsl
         cssAsync: 'css-async',
       },
       legalComments: 'none',
-      sourceMap: isRsbuild
-        ? undefined
-        : bundless
-          ? false
-          : {
-              js: 'cheap-source-map',
-            },
+      sourceMap: isRsbuild ? undefined : false,
       cssModules: {
         auto: true,
       },
-      minify: isTestEnv || bundless ? false : true,
+      minify: isRsbuild ? undefined : false,
     },
     performance: {
-      printFileSize: true,
+      printFileSize: isRsbuild ? true : false,
     },
     plugins: [
       pluginReact(),
@@ -96,8 +113,14 @@ export const getSharedConfig = (options?: SelfToolsOptions): RsbuildConfig | Rsl
           exportType: 'named',
         },
       }),
+      pluginDevtoolsJson(),
       sourceBuild && pluginSourceBuild({ sourceField }),
     ],
+    server: {
+      historyApiFallback: true,
+      // proxy: commonProxy('http://localhost:3000'),
+      port: PORT,
+    },
     tools: {
       bundlerChain: (chain) => {
         if (isTestEnv) {
@@ -106,60 +129,29 @@ export const getSharedConfig = (options?: SelfToolsOptions): RsbuildConfig | Rsl
           })
         }
       },
-      rspack: (config, { addRules }) => {
+      rspack: (config, { addRules, appendPlugins }) => {
         addRules({
           resourceQuery: /raw/,
           type: 'asset/source',
         })
-
-        config.ignoreWarnings = [/only differ in casing/]
 
         if (isTestEnv) {
           config.optimization!.moduleIds = 'named'
           config.optimization!.chunkIds = 'named'
         }
 
+        config.ignoreWarnings = [/only differ in casing/]
+
+        if (enablePersistentCache) {
+          config.experiments = {
+            cache: {
+              type: 'persistent',
+            },
+          }
+        }
+
         return config
       },
     },
   }
-}
-
-export const getRslibPresetConfig = (options?: SelfToolsOptions) => {
-  const { bundless: _bundless = true, isTestEnv = !!process.env.TEST, dts = false } = options || {}
-
-  const bundless = isTestEnv ? false : _bundless
-
-  const sharedConfig = getSharedConfig(options) as RslibConfig
-
-  return defineConfig({
-    ...sharedConfig,
-    lib: [
-      {
-        source: {
-          entry: {
-            // index: bundless ? 'src/**' : 'src/index.(js|ts|jsx|tsx)',
-            index: bundless ? 'src/**' : 'src/index.ts',
-          },
-        },
-        format: 'esm',
-        bundle: !bundless,
-        autoExtension: true,
-        syntax: 'es2015',
-        autoExternal: {
-          dependencies: true,
-          optionalDependencies: true,
-          devDependencies: true,
-          peerDependencies: true,
-        },
-        dts: isTestEnv ? false : dts,
-      },
-    ],
-  })
-}
-
-export const getRsbuildPresetConfig = (options?: SelfToolsOptions) => {
-  const sharedConfig = getSharedConfig(options) as RsbuildConfig
-
-  return { ...sharedConfig }
 }

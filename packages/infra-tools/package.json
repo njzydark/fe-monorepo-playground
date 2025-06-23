@@ -1,0 +1,69 @@
+{
+  "name": "infra-tools",
+  "version": "0.0.1",
+  "description": "infra tools for monorepo packages",
+  "private": true,
+  "engines": {
+    "node": ">= 18.12.0"
+  },
+  "bin": {
+    "rslib": "./bin/rslib.js",
+    "rsbuild": "./bin/rsbuild.js",
+    "rstest": "./bin/rstest.js"
+  },
+  "exports": {
+    "./test": {
+      "import": "./dist/test.mjs",
+      "require": "./dist/test.js",
+      "types": "./types/test.d.ts"
+    },
+    "./rslib": {
+      "import": "./dist/rslib.mjs",
+      "require": "./dist/rslib.js",
+      "types": "./types/rslib/index.d.ts"
+    },
+    "./rsbuild": {
+      "import": "./dist/rsbuild.mjs",
+      "require": "./dist/rsbuild.js",
+      "types": "./types/rsbuild/index.d.ts"
+    },
+    "./rstest": {
+      "import": "./dist/rstest.mjs",
+      "require": "./dist/rstest.js",
+      "types": "./types/rstest/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "RSLIB_DTS=true rslib build",
+    "build:nonedts": "RSLIB_DTS=false rslib build",
+    "dev": "RSLIB_DTS=true rslib build -w",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --fix --ext .ts,.tsx",
+    "prettier": "prettier --write src",
+    "postinstall": "npm run build"
+  },
+  "dependencies": {
+    "@rsbuild/core": "1.4.0-beta.3",
+    "@rsbuild/plugin-less": "1.2.4",
+    "@rsbuild/plugin-react": "1.3.1",
+    "@rsbuild/plugin-source-build": "1.0.2",
+    "@rsbuild/plugin-svgr": "1.2.0",
+    "@rslib/core": "0.10.0",
+    "@rstest/core": "0.0.2",
+    "@tailwindcss/postcss": "^4.0.4",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.0.1",
+    "@testing-library/user-event": "14.5.2",
+    "chokidar": "3.5.3",
+    "commander": "^9.5.0",
+    "glob": "^10.2.2",
+    "happy-dom": "15.11.6",
+    "jsdom": "24.1.1",
+    "less": "^4.1.3",
+    "postcss": "8.5.1",
+    "postcss-less": "^6.0.0",
+    "rsbuild-plugin-devtool-json": "^0.1.0",
+    "typescript": "catalog:"
+  }
+}
