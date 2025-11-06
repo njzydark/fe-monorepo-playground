@@ -16,7 +16,6 @@
     "declarationDir": "./types",
     "rootDir": "./src",
     "emitDeclarationOnly": true,
-    "baseUrl": ".",
     "types": ["@rstest/core/globals"]
   },
   "include": ["src"]

@@ -1,12 +1,16 @@
-import { defineConfig as defineRsbuildConfig, type RsbuildConfig } from '@rsbuild/core'
+import { defineConfig, mergeRsbuildConfig, type RsbuildConfig } from '@rsbuild/core'
 
-import { AbToolsRsbuildOptions, getRsbuildPresetConfig } from './preset-config'
+import { getRsbuildPresetConfig, RsbuildCustomOptions } from './preset-config'
 
 export * from '../rs-shared'
 export * from './preset-config'
+export * from '@rsbuild/core'
 
-export const defineConfig = (options?: Partial<RsbuildConfig> & { abTools?: AbToolsRsbuildOptions }) => {
-  const { abTools } = options || {}
-  const presetConfig = getRsbuildPresetConfig(abTools)
-  return defineRsbuildConfig(presetConfig)
+export const defineConfigWithPreset = (
+  options?: Partial<RsbuildConfig> & { infraToolsOptions?: RsbuildCustomOptions },
+) => {
+  const { infraToolsOptions, ...customConfig } = options || {}
+  const presetConfig = getRsbuildPresetConfig(infraToolsOptions)
+  const finalConfig = mergeRsbuildConfig(presetConfig, customConfig)
+  return defineConfig(finalConfig)
 }

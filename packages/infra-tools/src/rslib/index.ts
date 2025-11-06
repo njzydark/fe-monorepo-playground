@@ -1,12 +1,15 @@
-import { defineConfig as defineRslibConfig, type RslibConfig } from '@rslib/core'
+import { mergeRsbuildConfig } from '@rsbuild/core'
+import { defineConfig, type RslibConfig } from '@rslib/core'
 
-import { AbToolsRslibOptions, getRslibPresetConfig } from './preset-config'
+import { getRslibPresetConfig, RslibCustomOptions } from './preset-config'
 
 export * from '../rs-shared'
 export * from './preset-config'
+export * from '@rslib/core'
 
-export const defineConfig = (options?: Partial<RslibConfig> & { abTools?: AbToolsRslibOptions }) => {
-  const { abTools } = options || {}
-  const presetConfig = getRslibPresetConfig(abTools)
-  return defineRslibConfig(presetConfig)
+export const defineConfigWithPreset = (options?: Partial<RslibConfig> & { infraToolsOptions?: RslibCustomOptions }) => {
+  const { infraToolsOptions, ...customConfig } = options || {}
+  const presetConfig = getRslibPresetConfig(infraToolsOptions)
+  const finalConfig = mergeRsbuildConfig<RslibConfig>(presetConfig, customConfig as RslibConfig)
+  return defineConfig(finalConfig)
 }

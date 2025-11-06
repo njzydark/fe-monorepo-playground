@@ -9,9 +9,7 @@ const nodeEntry = {
   'bin/rstest': './src/bin/rstest.ts',
 }
 
-const webEntry = {
-  test: './src/test.ts',
-}
+const webEntry = {}
 
 const autoExternal = {
   dependencies: true,
@@ -38,19 +36,6 @@ export default defineConfig({
       },
     },
     {
-      format: 'esm',
-      bundle: true,
-      syntax: 'es2015',
-      autoExternal,
-      dts,
-      source: {
-        entry: webEntry,
-      },
-      output: {
-        target: 'web',
-      },
-    },
-    {
       format: 'cjs',
       bundle: true,
       syntax: 'es2015',
@@ -61,19 +46,6 @@ export default defineConfig({
       },
       output: {
         target: 'node',
-      },
-    },
-    {
-      format: 'cjs',
-      bundle: true,
-      syntax: 'es2015',
-      autoExternal,
-      dts: false,
-      source: {
-        entry: webEntry,
-      },
-      output: {
-        target: 'web',
       },
     },
   ],

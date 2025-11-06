@@ -1,11 +1,19 @@
 import eslint from '@eslint/js'
+import { defineConfig } from 'eslint/config'
 import prettierRecommended from 'eslint-plugin-prettier/recommended'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import tseslint from 'typescript-eslint'
 
-export default tseslint.config(
+export default defineConfig(
+  {
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+  },
   {
     files: ['**/src/**/*.[j|t]sx?'],
   },

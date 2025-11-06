@@ -3,7 +3,7 @@ import { globSync } from 'glob'
 
 import { getRsSharedConfig, RsSharedOptions } from '../rs-shared/config'
 
-export type AbToolsRslibOptions = RsSharedOptions & {
+export type RslibCustomOptions = RsSharedOptions & {
   /**
    * @default true
    */
@@ -15,17 +15,8 @@ export type AbToolsRslibOptions = RsSharedOptions & {
   dts?: boolean
 }
 
-export const getRslibPresetConfig = (options?: AbToolsRslibOptions) => {
-  const {
-    bundless: _bundless = true,
-    bundlessExclude = '!**/*.{md,bak,back}',
-    isTestEnv = !!process.env.TEST,
-    dts: _dts = false,
-    entry: _entry,
-  } = options || {}
-
-  const bundless = isTestEnv ? false : _bundless
-  const dts = isTestEnv ? false : _dts
+export const getRslibPresetConfig = (options?: RslibCustomOptions) => {
+  const { bundless = true, bundlessExclude = '!**/*.{md,bak,back}', dts = false, entry: _entry } = options || {}
 
   const bundleEntryPattern = 'src/index.{ts,js,tsx,jsx,mjs,cjs}'
   const bundleEntryMatchedFiles = _entry || bundless ? [] : globSync(bundleEntryPattern, { cwd: process.cwd() })

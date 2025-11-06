@@ -8,8 +8,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "baseUrl": "${configDir}"
+    "isolatedModules": true
   },
   "include": [
     "${configDir}/src",

@@ -1,19 +1,18 @@
 {
   "extends": "../../tsconfig.app.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ]
     }
   },
   "references": [
     {
-      "path": "../../packages/shared-demo"
+      "path": "../shared-demo"
     },
     {
-      "path": "../../packages/package-demo"
+      "path": "../package-demo"
     }
   ]
 }

@@ -1,12 +1,18 @@
-import { defineConfig as defineRstestConfig, RstestConfig } from '@rstest/core'
+import { defineConfig, mergeRstestConfig, RstestConfig } from '@rstest/core'
 
-import { AbToolsRstestOptions, getRstestPresetConfig } from './preset-config'
+import { getRstestPresetConfig, RsTestCustomOptions } from './preset-config'
 
 export * from '../rs-shared'
 export * from './preset-config'
+export * from '@rstest/core'
+export * from '@testing-library/react'
+export * from '@testing-library/user-event'
 
-export const defineConfig = (options?: Partial<RstestConfig> & { abTools?: AbToolsRstestOptions }) => {
-  const { abTools } = options || {}
-  const presetConfig = getRstestPresetConfig(abTools)
-  return defineRstestConfig(presetConfig)
+export const defineConfigWithPreset = (
+  options?: Partial<RstestConfig> & { infraToolsOptions?: RsTestCustomOptions },
+) => {
+  const { infraToolsOptions, ...customConfig } = options || {}
+  const presetConfig = getRstestPresetConfig(infraToolsOptions)
+  const finalConfig = mergeRstestConfig(presetConfig, customConfig)
+  return defineConfig(finalConfig)
 }

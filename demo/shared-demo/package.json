@@ -9,6 +9,7 @@
     "test": "rstest run"
   },
   "dependencies": {
+    "axios": "catalog:",
     "classnames": "catalog:",
     "dayjs": "catalog:",
     "lodash": "catalog:",

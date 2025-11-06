@@ -1,11 +1,11 @@
-import type { RsbuildConfig, RsbuildEntry, ToolsConfig } from '@rsbuild/core'
-import { pluginLess } from '@rsbuild/plugin-less'
-import { pluginReact } from '@rsbuild/plugin-react'
-import { pluginSourceBuild } from '@rsbuild/plugin-source-build'
-import { pluginSvgr } from '@rsbuild/plugin-svgr'
+import type { OutputConfig, RsbuildConfig, RsbuildEntry } from '@rsbuild/core'
+import { pluginLess, PluginLessOptions } from '@rsbuild/plugin-less'
+import { pluginReact, PluginReactOptions } from '@rsbuild/plugin-react'
+import { pluginSourceBuild, PluginSourceBuildOptions } from '@rsbuild/plugin-source-build'
+import { pluginSvgr, PluginSvgrOptions } from '@rsbuild/plugin-svgr'
 import type { RslibConfig } from '@rslib/core'
 import { globSync } from 'glob'
-import pluginDevtoolsJson from 'rsbuild-plugin-devtool-json'
+import { pluginDevtoolsJson } from 'rsbuild-plugin-devtools-json'
 
 import { define } from './define'
 import { PORT } from './env'
@@ -22,30 +22,35 @@ export type RsSharedOptions = {
    */
   sourceField?: string
   /**
-   * @default !!process.env.TEST
-   */
-  isTestEnv?: boolean
-  /**
    * @default true
    */
   enablePersistentCache?: boolean
+  externals?: OutputConfig['externals']
+  pluginOptions?: {
+    react?: Partial<PluginReactOptions>
+    less?: Partial<PluginLessOptions>
+    svgr?: Partial<PluginSvgrOptions>
+    sourceBuild?: Partial<PluginSourceBuildOptions>
+  }
 }
 
 export const getRsSharedConfig = (options?: RsSharedOptions): RsbuildConfig | RslibConfig => {
   const nodePath = process.env?.NODE_PATH
+  const proxyTarget = process.env?.PROXY_TARGET
   const isRsbuild = nodePath?.includes('rsbuild')
 
   const {
     entry,
     sourceBuild = true,
     sourceField = 'source',
-    isTestEnv = !!process.env.TEST,
     enablePersistentCache = true,
+    externals,
+    pluginOptions = {},
   } = options || {}
 
   const defaultEntryPattern = isRsbuild
-    ? 'src/{dev,index}.{ts,js,tsx,jsx,mjs,cjs}'
-    : 'src/index.{ts,js,tsx,jsx,mjs,cjs}'
+    ? './src/{dev,index}.{ts,js,tsx,jsx,mjs,cjs}'
+    : './src/index.{ts,js,tsx,jsx,mjs,cjs}'
 
   const entryMatchedFiles = entry ? [] : globSync(defaultEntryPattern, { cwd: process.cwd() })
 
@@ -53,7 +58,7 @@ export const getRsSharedConfig = (options?: RsSharedOptions): RsbuildConfig | Rs
     source: {
       define,
       entry: entry ?? {
-        index: entryMatchedFiles?.[0],
+        index: `./${entryMatchedFiles?.[0]}`,
       },
       transformImport: [
         {
@@ -93,60 +98,51 @@ export const getRsSharedConfig = (options?: RsSharedOptions): RsbuildConfig | Rs
         auto: true,
       },
       minify: isRsbuild ? undefined : false,
+      externals,
     },
     performance: {
       printFileSize: isRsbuild ? true : false,
     },
     plugins: [
-      pluginReact(),
+      pluginDevtoolsJson(),
+      pluginReact(pluginOptions.react),
       pluginLess({
-        lessLoaderOptions: {
-          lessOptions: {
-            math: 'always',
-            javascriptEnabled: true,
-          },
-        },
+        ...pluginOptions.less,
       }),
       pluginSvgr({
         mixedImport: true,
+        ...pluginOptions.svgr,
         svgrOptions: {
           exportType: 'named',
+          ...pluginOptions.svgr?.svgrOptions,
         },
       }),
-      pluginDevtoolsJson(),
-      sourceBuild && pluginSourceBuild({ sourceField }),
+      sourceBuild && pluginSourceBuild({ sourceField, ...pluginOptions.sourceBuild }),
     ],
     server: {
       historyApiFallback: true,
-      // proxy: commonProxy('http://localhost:3000'),
+      proxy: proxyTarget ? commonProxy(proxyTarget) : undefined,
       port: PORT,
     },
     tools: {
-      bundlerChain: (chain) => {
-        if (isTestEnv) {
-          chain.output.devtoolModuleFilenameTemplate((value) => {
-            return `${value.absoluteResourcePath}`
-          })
-        }
-      },
-      rspack: (config, { addRules, appendPlugins }) => {
+      rspack: (config, { addRules }) => {
+        config.experiments ||= {}
+        config.experiments.typeReexportsPresence = true
+
+        config.module.parser ||= {}
+        config.module.parser.javascript ||= {}
+        config.module.parser.javascript.typeReexportsPresence = 'tolerant'
+
         addRules({
           resourceQuery: /raw/,
           type: 'asset/source',
         })
 
-        if (isTestEnv) {
-          config.optimization!.moduleIds = 'named'
-          config.optimization!.chunkIds = 'named'
-        }
-
         config.ignoreWarnings = [/only differ in casing/]
 
         if (enablePersistentCache) {
-          config.experiments = {
-            cache: {
-              type: 'persistent',
-            },
+          config.experiments.cache = {
+            type: 'persistent',
           }
         }
 

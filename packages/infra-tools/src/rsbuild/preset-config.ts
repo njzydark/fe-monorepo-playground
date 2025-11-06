@@ -1,9 +1,10 @@
 import { defineConfig } from '@rsbuild/core'
-import { getRsSharedConfig, RsSharedOptions } from 'src/rs-shared/config'
 
-export type AbToolsRsbuildOptions = RsSharedOptions
+import { getRsSharedConfig, RsSharedOptions } from '../rs-shared/config'
 
-export const getRsbuildPresetConfig = (options?: AbToolsRsbuildOptions) => {
+export type RsbuildCustomOptions = RsSharedOptions
+
+export const getRsbuildPresetConfig = (options?: RsbuildCustomOptions) => {
   const sharedConfig = getRsSharedConfig(options)
 
   return defineConfig({
