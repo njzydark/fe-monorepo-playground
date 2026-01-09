@@ -1,0 +1,52 @@
+{
+  "name": "fe-monorepo-playground",
+  "private": true,
+  "engines": {
+    "node": ">= 18.12.0",
+    "pnpm": "^10"
+  },
+  "packageManager": "pnpm@10.27.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "core-js"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/njzydark/fe-monorepo-playground.git"
+  },
+  "author": "njzydark",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/njzydark/fe-monorepo-playground/issues"
+  },
+  "homepage": "https://github.com/njzydark/fe-monorepo-playground#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@tailwindcss/postcss": "4.1.18",
+    "@types/node": "18",
+    "eslint": "^9.19.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "husky": "9.1.7",
+    "infra-tools": "workspace:*",
+    "less": "4.5.1",
+    "lint-staged": "15.4.2",
+    "postcss": "8.5.6",
+    "postcss-less": "6.0.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "stylelint": "^16.14.1",
+    "stylelint-config-standard": "^37.0.0",
+    "stylelint-less": "^3.0.1",
+    "stylelint-prettier": "^5.0.3",
+    "typescript": "catalog:",
+    "typescript-eslint": "^8.46.3"
+  },
+  "scripts": {
+    "prepare": "husky"
+  }
+}

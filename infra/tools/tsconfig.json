@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationMap": false,
+    "declarationDir": "./types",
+    "rootDir": "./src",
+    "emitDeclarationOnly": true,
+    "types": ["@rstest/core/globals"]
+  },
+  "include": ["src"]
+}

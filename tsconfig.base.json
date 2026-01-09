@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": [
+      "@rstest/core/globals",
+      "@testing-library/jest-dom"
+    ]
+  },
+  "include": [
+    "${configDir}/src",
+    "${configDir}/src/**/*.json",
+    "global.d.ts",
+  ],
+}

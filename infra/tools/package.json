@@ -1,0 +1,53 @@
+{
+  "name": "infra-tools",
+  "version": "0.0.1",
+  "description": "infra tools for monorepo packages",
+  "private": true,
+  "engines": {
+    "node": ">= 18.12.0"
+  },
+  "bin": {
+    "rslib": "./bin/rslib.js",
+    "rsbuild": "./bin/rsbuild.js",
+    "rstest": "./bin/rstest.js"
+  },
+  "exports": {
+    "./rslib": {
+      "import": "./src/rslib/index.ts"
+    },
+    "./rsbuild": {
+      "import": "./src/rsbuild/index.ts"
+    },
+    "./rstest": {
+      "import": "./src/rstest/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "RSLIB_DTS=true rslib build",
+    "build:nonedts": "RSLIB_DTS=false rslib build",
+    "dev": "RSLIB_DTS=true rslib build -w",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --fix --ext .ts,.tsx",
+    "prettier": "prettier --write src",
+    "postinstall": "npm run build"
+  },
+  "dependencies": {
+    "@rsbuild/core": "catalog:",
+    "@rsbuild/plugin-less": "1.5.0",
+    "@rsbuild/plugin-react": "1.4.2",
+    "@rsbuild/plugin-source-build": "1.0.3",
+    "@rsbuild/plugin-svgr": "1.2.3",
+    "@rslib/core": "catalog:",
+    "@rstest/core": "catalog:",
+    "@rstest/coverage-istanbul": "0.1.4",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.1",
+    "@testing-library/user-event": "14.6.1",
+    "glob": "13.0.0",
+    "happy-dom": "20.0.11",
+    "jsdom": "27.4.0",
+    "rsbuild-plugin-devtools-json": "0.2.5",
+    "typescript": "catalog:"
+  }
+}
