@@ -24,7 +24,7 @@ export const getRslibPresetConfig = (options?: RslibCustomOptions) => {
     index: bundless ? ['src/**/*', bundlessExclude] : bundleEntryMatchedFiles?.[0],
   }
 
-  const sharedConfig = getRsSharedConfig({ ...options, entry })
+  const sharedConfig = getRsSharedConfig('rslib', { ...options, entry })
 
   return defineConfig({
     ...sharedConfig,

@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Project Initialization'
+  short_description: 'Initialize a forked template for a real project'
+  default_prompt: 'Use $project-initialization-guideline to initialize a forked copy of this monorepo template.'

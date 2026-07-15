@@ -1,0 +1,24 @@
+{
+  "name": "example-react-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "rsbuild dev",
+    "build": "rsbuild build",
+    "preview": "rsbuild preview"
+  },
+  "dependencies": {
+    "@base-ui/react": "1.6.0",
+    "example-shared": "workspace:*",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-router": "8.2.0",
+    "zustand": "catalog:"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "catalog:",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "infra-tools": "workspace:*"
+  }
+}

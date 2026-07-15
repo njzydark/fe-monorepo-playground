@@ -54,24 +54,22 @@ export const getRstestPresetConfig = (options?: RsTestCustomOptions) => {
     : options?.externals
       ? [options.externals]
       : []
-  const sharedConfig = getRsSharedConfig({
+  const sharedConfig = getRsSharedConfig('rstest', {
     ...options,
     enablePersistentCache: false,
     externals: [...externals, ...defaultExternals],
   })
 
   return defineConfig({
-    ...(sharedConfig as any),
+    plugins: sharedConfig.plugins,
     output: {
-      ...sharedConfig.output,
-      target: 'node',
+      cssModules: sharedConfig.output?.cssModules,
+      externals: sharedConfig.output?.externals,
     },
     source: {
-      ...sharedConfig.source,
-      define: {
-        ...sharedConfig.source?.define,
-      },
+      define: sharedConfig.source?.define,
     },
+    tools: sharedConfig.tools,
     ...getCommonPresetConfig(),
   })
 }

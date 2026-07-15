@@ -3,7 +3,6 @@ import { pluginLess, PluginLessOptions } from '@rsbuild/plugin-less'
 import { pluginReact, PluginReactOptions } from '@rsbuild/plugin-react'
 import { pluginSourceBuild, PluginSourceBuildOptions } from '@rsbuild/plugin-source-build'
 import { pluginSvgr, PluginSvgrOptions } from '@rsbuild/plugin-svgr'
-import type { RslibConfig } from '@rslib/core'
 import { globSync } from 'glob'
 import path from 'path'
 import { pluginDevtoolsJson } from 'rsbuild-plugin-devtools-json'
@@ -12,8 +11,12 @@ import { define } from './define'
 import { PORT } from './env'
 import { commonProxy } from './proxy'
 
+export type RsSharedTarget = 'rsbuild' | 'rslib' | 'rstest'
+type SourceConfig = NonNullable<RsbuildConfig['source']>
+
 export type RsSharedOptions = {
   entry?: RsbuildEntry
+  transformImport?: SourceConfig['transformImport']
   /**
    * @default true
    */
@@ -35,10 +38,27 @@ export type RsSharedOptions = {
   }
 }
 
-export const getRsSharedConfig = (options?: RsSharedOptions): RsbuildConfig | RslibConfig => {
-  const nodePath = process.env?.NODE_PATH
+const getDefaultEntryPattern = (target: RsSharedTarget) => {
+  return target === 'rsbuild' ? './src/{dev,index}.{ts,js,tsx,jsx,mjs,cjs}' : './src/index.{ts,js,tsx,jsx,mjs,cjs}'
+}
+
+const getEntry = (target: RsSharedTarget, entry?: RsbuildEntry): RsbuildConfig['source'] => {
+  if (target === 'rstest') {
+    return {}
+  }
+
+  const entryMatchedFiles = entry ? [] : globSync(getDefaultEntryPattern(target), { cwd: process.cwd() })
+
+  return {
+    entry: entry ?? {
+      index: `./${entryMatchedFiles?.[0]}`,
+    },
+  }
+}
+
+export const getRsSharedConfig = (target: RsSharedTarget, options?: RsSharedOptions): RsbuildConfig => {
   const proxyTarget = process.env?.PROXY_TARGET
-  const isRsbuild = nodePath?.includes('rsbuild')
+  const isRsbuild = target === 'rsbuild'
 
   const {
     entry,
@@ -47,44 +67,14 @@ export const getRsSharedConfig = (options?: RsSharedOptions): RsbuildConfig | Rs
     enablePersistentCache = true,
     externals,
     pluginOptions = {},
+    transformImport,
   } = options || {}
 
-  const defaultEntryPattern = isRsbuild
-    ? './src/{dev,index}.{ts,js,tsx,jsx,mjs,cjs}'
-    : './src/index.{ts,js,tsx,jsx,mjs,cjs}'
-
-  const entryMatchedFiles = entry ? [] : globSync(defaultEntryPattern, { cwd: process.cwd() })
-
-  return {
+  const config: RsbuildConfig = {
     source: {
       define,
-      entry: entry ?? {
-        index: `./${entryMatchedFiles?.[0]}`,
-      },
-      transformImport: [
-        {
-          libraryName: '@arco-design/web-react',
-          libraryDirectory: 'es',
-          camelToDashComponentName: false,
-          style: true,
-        },
-        {
-          libraryName: '@arco-design/web-react/icon',
-          libraryDirectory: 'react-icon',
-          camelToDashComponentName: false,
-        },
-        {
-          libraryName: '@dp/react-component',
-          libraryDirectory: 'es',
-          camelToDashComponentName: false,
-          style: true,
-        },
-        {
-          libraryName: '@dp/react-component-icon',
-          libraryDirectory: 'react-icon',
-          camelToDashComponentName: false,
-        },
-      ],
+      ...getEntry(target, entry),
+      transformImport,
     },
     output: {
       target: 'web',
@@ -102,10 +92,10 @@ export const getRsSharedConfig = (options?: RsSharedOptions): RsbuildConfig | Rs
       externals,
     },
     performance: {
-      printFileSize: isRsbuild ? true : false,
+      printFileSize: isRsbuild,
     },
     plugins: [
-      pluginDevtoolsJson(),
+      isRsbuild && pluginDevtoolsJson(),
       pluginReact(pluginOptions.react),
       pluginLess({
         ...pluginOptions.less,
@@ -120,41 +110,46 @@ export const getRsSharedConfig = (options?: RsSharedOptions): RsbuildConfig | Rs
       }),
       sourceBuild && pluginSourceBuild({ sourceField, ...pluginOptions.sourceBuild }),
     ],
-    server: {
-      historyApiFallback: true,
-      proxy: proxyTarget ? commonProxy(proxyTarget) : undefined,
-      port: PORT,
-    },
-    dev: {
-      watchFiles: [
-        {
-          type: 'reload-server',
-          paths: `${path.join(__dirname, '../**/*')}`,
-        },
-      ],
-    },
     tools: {
-      rspack: (config, { addRules }) => {
-        config.module.parser ||= {}
-        config.module.parser.javascript ||= {}
-        config.module.parser.javascript.typeReexportsPresence = 'tolerant'
+      rspack: (rspackConfig, { addRules }) => {
+        rspackConfig.module.parser ||= {}
+        rspackConfig.module.parser.javascript ||= {}
+        rspackConfig.module.parser.javascript.typeReexportsPresence = 'tolerant'
 
         addRules({
           resourceQuery: /raw/,
           type: 'asset/source',
         })
 
-        config.ignoreWarnings = [/only differ in casing/]
+        rspackConfig.ignoreWarnings = [/only differ in casing/]
 
-        config.experiments ||= {}
+        rspackConfig.experiments ||= {}
         if (enablePersistentCache) {
-          config.experiments.cache = {
+          rspackConfig.cache = {
             type: 'persistent',
           }
         }
 
-        return config
+        return rspackConfig
       },
     },
   }
+
+  if (target === 'rsbuild') {
+    config.server = {
+      historyApiFallback: true,
+      proxy: proxyTarget ? [commonProxy(proxyTarget)] : undefined,
+      port: PORT,
+    }
+    config.dev = {
+      watchFiles: [
+        {
+          type: 'reload-server',
+          paths: `${path.join(__dirname, '../**/*')}`,
+        },
+      ],
+    }
+  }
+
+  return config
 }

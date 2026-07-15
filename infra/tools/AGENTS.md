@@ -4,7 +4,7 @@ This document provides guidelines for agents working with the infra-tools packag
 
 ## Overview
 
-This package provides a simple wrapper around the rspack ecosystem tools (rsbuild, rslib, rstest) with pre-defined configurations to unify the monorepo setup.
+This package provides a simple wrapper around the Rsstack ecosystem tools (rsbuild, rslib, rstest) with pre-defined configurations to unify the monorepo setup.
 
 ## Usage
 
@@ -17,6 +17,10 @@ pnpm rsbuild preview
 pnpm rslib build
 pnpm rstest
 ```
+
+For toolchain upgrades, use `$rsstack-toolchain-guideline` from the repo skills.
+
+Packages should run the official Rsstack bins directly. Do not add bin wrappers in `infra-tools`; instead add thin package-local config files that import the preset:
 
 ## Custom Configuration
 

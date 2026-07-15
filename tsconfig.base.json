@@ -2,21 +2,13 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "types": [
-      "@rstest/core/globals",
-      "@testing-library/jest-dom"
-    ]
+    "isolatedModules": true
   },
-  "include": [
-    "${configDir}/src",
-    "${configDir}/src/**/*.json",
-    "global.d.ts",
-  ],
+  "include": ["${configDir}/src", "${configDir}/src/**/*.json", "global.d.ts"]
 }

@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.app.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "types": ["node"]
+  }
+}

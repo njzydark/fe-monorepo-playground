@@ -1,0 +1,4 @@
+interface:
+  display_name: 'React Router'
+  short_description: 'Build app routes with React Router'
+  default_prompt: 'Use $react-router-guideline to add or refactor routes in this monorepo.'

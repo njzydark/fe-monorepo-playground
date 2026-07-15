@@ -1,5 +1,4 @@
-import { mergeRsbuildConfig } from '@rsbuild/core'
-import { defineConfig, type RslibConfig } from '@rslib/core'
+import { defineConfig, mergeRslibConfig, type RslibConfig } from '@rslib/core'
 
 import { getRslibPresetConfig, RslibCustomOptions } from './preset-config'
 
@@ -10,6 +9,9 @@ export * from '@rslib/core'
 export const defineConfigWithPreset = (options?: Partial<RslibConfig> & { infraToolsOptions?: RslibCustomOptions }) => {
   const { infraToolsOptions, ...customConfig } = options || {}
   const presetConfig = getRslibPresetConfig(infraToolsOptions)
-  const finalConfig = mergeRsbuildConfig<RslibConfig>(presetConfig, customConfig as RslibConfig)
-  return defineConfig(finalConfig)
+  const finalConfig = mergeRslibConfig(presetConfig, customConfig)
+  return defineConfig({
+    ...finalConfig,
+    lib: finalConfig.lib ?? presetConfig.lib,
+  })
 }

@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Rsstack Toolchain'
+  short_description: 'Maintain the monorepo Rsstack toolchain'
+  default_prompt: 'Use $rsstack-toolchain-guideline to update or validate the monorepo Rsstack toolchain.'

@@ -1,9 +1,8 @@
 {
   "recommendations": [
     "clinyong.vscode-css-modules",
-    "dbaeumer.vscode-eslint",
     "antfu.pnpm-catalog-lens",
-    "esbenp.prettier-vscode",
+    "oxc.oxc-vscode",
     "stylelint.vscode-stylelint",
     "rstack.rstest"
   ]

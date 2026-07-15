@@ -7,6 +7,6 @@
     "outDir": "${configDir}/dist",
     "declaration": true,
     "declarationDir": "${configDir}/types",
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": true
   }
 }

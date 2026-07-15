@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "react", "import", "jest"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "import/no-unassigned-import": "off",
+    "eslint/no-unneeded-ternary": "off"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "es2024": true,
+    "jest": true
+  },
+  "ignorePatterns": ["**/dist/**", "**/types/**", "**/node_modules/**"]
+}

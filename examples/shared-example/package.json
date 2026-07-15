@@ -1,0 +1,24 @@
+{
+  "name": "example-shared",
+  "private": true,
+  "type": "module",
+  "source": "src/index.ts",
+  "types": "types/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "types": "./types/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rslib build"
+  },
+  "devDependencies": {
+    "@rslib/core": "catalog:",
+    "infra-tools": "workspace:*"
+  }
+}

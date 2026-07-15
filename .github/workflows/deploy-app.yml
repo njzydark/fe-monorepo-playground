@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       app_path:
-        description: 'App path (e.g., demo/demo-app)'
+        description: 'Deployable app path (e.g., apps/web)'
         required: true
         type: string
       image_name:
@@ -31,7 +31,16 @@ jobs:
         id: meta
         run: |
           APP_PATH="${{ github.event.inputs.app_path }}"
-          APP_NAME=$(cat "$APP_PATH/package.json" | grep '"name"' | head -1 | sed 's/.*"name": *"\([^"]*\)".*/\1/')
+          if [ ! -f "$APP_PATH/package.json" ]; then
+            echo "Missing package.json at $APP_PATH" >&2
+            exit 1
+          fi
+          if [ ! -f "$APP_PATH/Dockerfile" ]; then
+            echo "Missing Dockerfile at $APP_PATH" >&2
+            exit 1
+          fi
+
+          APP_NAME=$(node -p "require('./${APP_PATH}/package.json').name")
 
           INPUT_IMAGE_NAME="${{ github.event.inputs.image_name }}"
           REPO_NAME="${{ github.event.repository.name }}"

@@ -5,14 +5,14 @@ This document provides guidelines for agents working in this monorepo.
 ## Monorepo structure
 
 - `infra/tools` — infra-tools: preset config for rstest, rsbuild, rslib
-- `eslint.config.mjs` — ESLint configuration
-- `prettier.config.mjs` — Prettier configuration
+- `.oxlintrc.json` — OXLint configuration
+- `.oxfmtrc.json` — OXFmt configuration
 - `stylelint.config.mjs` — Stylelint configuration
-- `rstest.config.ts` — Test global configuration
 - `tsconfig.*.json` — TypeScript configurations
+- `.agents/skills` — repo-specific AI skills and implementation guidelines
 - `packages/` — lib packages
 - `apps/` — app packages
-- `demo/` — demo packages (demo-app, demo-package, demo-shared)
+- `examples/` — runnable example/template packages
 
 ## Build, Lint, and Test Commands
 
@@ -28,16 +28,19 @@ pnpm rslib build
 # Type check a single file
 pnpm tsc --noEmit path/to/file.ts
 # Format a single file
-pnpm prettier --write path/to/file.ts
+pnpm oxfmt path/to/file.ts
 # Lint a single file (with auto-fix)
-pnpm eslint --fix --write path/to/file.ts
+pnpm oxlint path/to/file.ts --fix
 # Run a single test file
 pnpm rstest path/to/file.test.ts
 ```
 
+Packages should use official Rsstack bins directly and provide a thin local config file that imports the infra preset, for example `rsbuild.config.ts` with `defineConfigWithPreset` from `infra-tools/rsbuild`.
+Packages that need tests should add package-local Rstest config instead of relying on a root test project.
+
 ## Code Style Guidelines
 
-### Formatting (Prettier)
+### Formatting (OXFmt)
 
 - Print width: 120 characters
 - Tab width: 2 spaces
@@ -48,7 +51,7 @@ pnpm rstest path/to/file.test.ts
 
 ### Imports
 
-- Use workspace package names for internal dependencies (e.g., `import { fn } from 'demo-shared'`)
+- Use workspace package names for internal dependencies (e.g., `import { fn } from 'some-shared-package'`)
 - Use relative imports only for files in the same package (`./components`, `../utils`)
 - Group imports in this order:
   1. npm packages (alphabetically)
@@ -93,16 +96,23 @@ pnpm rstest path/to/file.test.ts
 - Use global test APIs (`describe`, `it`, `expect`) without imports
 - Import testing apis from:
   - `@rstest/core` APIs (Rstest offers full Jest-compatible APIs)
-  - `@testing-library/react` APIs
-  - `@testing-library/user-event` APIs
+- For React packages, add and import `@testing-library/react` and `@testing-library/user-event` as package-local dev dependencies
 - Group tests with `describe` blocks by function/component
 - Use descriptive test names: `it('should return sum of two numbers', () => {...})`
 
 ### Git and Workflow
 
-- Before committing, run: `prettier --write` then `eslint --fix` then `tsc -b .`
+- Before committing, run: `pnpm format` then `pnpm lint` then `pnpm tsc -b .`
 - Commit messages: short summary line, optionally with body
 - Use conventional commit format for significant changes
+
+## Repo Skills
+
+- Use `$rsstack-toolchain-guideline` when changing Rsbuild, Rslib, Rstest, TypeScript, OXLint, OXFmt, Stylelint, or infra-tools presets.
+- Use `$react-router-guideline` when adding or refactoring React Router routes.
+- Use `$base-ui-guideline` when building accessible UI primitives with Base UI.
+- Use `$create-package-guideline` when creating app, library, shared, or example packages.
+- Use `$project-initialization-guideline` when initializing a forked copy of this template for a real project.
 
 ## Infra Tools Module
 

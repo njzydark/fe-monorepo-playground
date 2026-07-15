@@ -5,20 +5,13 @@
   "material-icon-theme.files.associations": {
     "tsconfig.module.json": "tsconfig"
   },
-  "eslint.useFlatConfig": true,
-  "eslint.nodePath": "node_modules",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.tsserver.maxTsServerMemory": 4096,
-  "typescript.tsserver.watchOptions": {},
-  "stylelint.validate": [
-    "css",
-    "less",
-    "postcss"
-  ],
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.format.oxc": "always",
+    "source.fixAll.oxc": "always"
   },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "oxc.requireConfig": true,
+  "stylelint.validate": ["css", "less", "postcss"]
 }

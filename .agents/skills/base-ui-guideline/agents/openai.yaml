@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Base UI'
+  short_description: 'Build accessible primitives with Base UI'
+  default_prompt: 'Use $base-ui-guideline to build accessible UI primitives in this monorepo.'

@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./infra/tools"
+    },
+    {
+      "path": "./examples/shared-example"
+    },
+    {
+      "path": "./examples/react-app"
+    },
+    {
+      "path": "./examples/hono-server"
+    }
+  ]
+}

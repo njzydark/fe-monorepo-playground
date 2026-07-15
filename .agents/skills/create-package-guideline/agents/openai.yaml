@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Create Package'
+  short_description: 'Create apps, packages, and runnable examples'
+  default_prompt: 'Use $create-package-guideline to create a new workspace package in this monorepo.'

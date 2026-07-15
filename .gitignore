@@ -10,3 +10,5 @@ node_modules/
 packages/*/types
 demo/*/types
 infra/*/types
+examples/*/types
+examples/*/.data
